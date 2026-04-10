@@ -113,3 +113,4 @@ exports.checkSessions = functions.region('europe-west1').pubsub
     return null;
   });
 
+ 
