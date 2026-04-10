@@ -1,0 +1,38 @@
+name: Deploy Firebase Functions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'functions/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install Functions dependencies
+        run: cd functions && npm install
+
+      - name: Set Firebase Functions config
+        run: |
+          firebase --project dumxi-2f2fe functions:config:set \
+            stripe.secret_key="${{ secrets.STRIPE_SECRET_KEY }}" \
+            stripe.webhook_secret="${{ secrets.STRIPE_WEBHOOK_SECRET }}"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy Functions
+        run: firebase deploy --only functions --project dumxi-2f2fe
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
