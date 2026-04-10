@@ -112,3 +112,4 @@ exports.checkSessions = functions.region('europe-west1').pubsub
     console.log('Auto-cancelled', snap.size, 'sessions');
     return null;
   });
+
